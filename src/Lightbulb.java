@@ -58,7 +58,7 @@ public class Lightbulb {
 
         return possibleConfig;
     }
-    
+
     public static int findHighestNum(ArrayList<ArrayList<Integer>> bulbs) {
         int highestNum = 0;
             for(int i = 0; i < bulbs.size(); i++) {
@@ -69,6 +69,58 @@ public class Lightbulb {
                 }
             }
         return highestNum;
+    }
+
+    public static ArrayList<ArrayList<Integer>> generateBulbs(int size, int highestNum) {
+        ArrayList<ArrayList<Integer>> completedList = new ArrayList<ArrayList<Integer>>();
+        ArrayList<Integer> row = new ArrayList<Integer>();
+
+        for(int i = 0; i < size; i++) {
+            for(int j = 0; j < 3; j++) {
+                int randomNum = (int)Math.floor(Math.random()*(highestNum-1+1)+1);
+                
+                if((int)Math.floor(Math.random()*(1-0+1)+0) == 0) {
+                    row.add(randomNum);
+                }
+                else {
+                    row.add(-randomNum);
+                }
+            }
+            
+            //Creating a shallow copy
+            ArrayList<Integer> tempList = new ArrayList<>(row);
+            completedList.add(tempList);
+            row.clear();
+        }
+
+        return completedList;
+    }
+
+    public static boolean checkValid(ArrayList<ArrayList<Integer>> bulbs, ArrayList<Boolean> config) {
+        HashMap<Integer, Boolean> chart = new HashMap<Integer, Boolean>();
+        boolean valid = true;
+
+        for(int i = 1; i <= config.size(); i++) {
+            chart.put(i, config.get(i-1));
+        }
+
+        int i = 0;
+
+        while(i <= bulbs.size()-1) {
+            for(int j = 0; j < bulbs.get(0).size(); j++) {
+                if(((bulbs.get(i).get(j) < 0) && chart.get(Math.abs(bulbs.get(i).get(j))) == true) || (bulbs.get(i).get(j) > 0) && chart.get(Math.abs(bulbs.get(i).get(j))) == false) {
+                    if(j == 2) {
+                        valid = false;
+                    }
+                }
+                else if(((bulbs.get(i).get(j) < 0) && chart.get(Math.abs(bulbs.get(i).get(j))) == false) || (bulbs.get(i).get(j) > 0) && chart.get(Math.abs(bulbs.get(i).get(j))) == true) {
+                    j = 2;
+                }
+            }
+            i++;
+        }
+
+        return valid;
     }
 }
 
